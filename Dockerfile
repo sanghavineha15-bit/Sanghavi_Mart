@@ -29,7 +29,8 @@ ENV VCPKG_ROOT=/opt/vcpkg
 ENV PATH="${VCPKG_ROOT}:${PATH}"
 
 # Install Drogon and dependencies via vcpkg
-RUN vcpkg install drogon postgresql --triplet=x64-linux
+# Note: port is 'libpq', not 'postgresql'
+RUN vcpkg install drogon libpq --triplet=x64-linux
 
 # Set working directory
 WORKDIR /app
