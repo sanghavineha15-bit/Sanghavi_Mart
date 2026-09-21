@@ -29,3 +29,15 @@ Desktop.ini
 # Temporary files
 *.tmp
 *.log
+
+# Firebase Admin SDK - NEVER commit service account JSON (contains private key)
+*/firebase-adminsdk*.json
+*firebase-adminsdk*.json
+serviceAccount*.json
+*-firebase-adminsdk-*.json
+.firebase/
+.firestore_emulator/
+
+# Environment files - NEVER commit real secrets
+.env
+.env.local

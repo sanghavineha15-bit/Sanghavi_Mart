@@ -71,7 +71,37 @@
 
         <div id="message" class="message"></div>
         <div id="tokenBox" class="token-box"></div>
+        <div id="firebaseStatus" style="margin-top:10px;font-size:12px;color:#666;text-align:center;">Firebase: initializing…</div>
     </div>
+
+    <!-- Firebase Web SDK (client config is public; service-account JSON stays server-side only) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBo73EX4oL0ViPc5jJkvef83BONMjkaAwI",
+            authDomain: "sanghavi-3b9d3.firebaseapp.com",
+            projectId: "sanghavi-3b9d3",
+            storageBucket: "sanghavi-3b9d3.firebasestorage.app",
+            messagingSenderId: "125518489800",
+            appId: "1:125518489800:web:6baeb7f9cfec69ba361dfd",
+            measurementId: "G-YY4C4Y73QW"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            try { getAnalytics(app); } catch (e) { /* analytics needs https, ignore locally */ }
+            window.firebaseApp = app;
+            window.firebaseAuth = getAuth(app);
+            window.firebaseDb = getFirestore(app);
+            document.getElementById('firebaseStatus').textContent = 'Firebase connected: ' + firebaseConfig.projectId + ' (Auth + Firestore ready)';
+        } catch (e) {
+            document.getElementById('firebaseStatus').textContent = 'Firebase init failed: ' + e.message;
+        }
+    </script>
 
     <script>
         // API base: empty = same-origin (works locally via Drogon + on Vercel via /api proxy rewrite).
