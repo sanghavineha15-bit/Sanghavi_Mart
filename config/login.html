@@ -74,7 +74,9 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8080';
+        // API base: empty = same-origin (works locally via Drogon + on Vercel via /api proxy rewrite).
+        // Vercel proxies /api/* to Railway backend (see vercel.json). No CORS issues.
+        const API_BASE = '';
 
         function showForm(type) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));

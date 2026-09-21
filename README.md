@@ -159,6 +159,43 @@ If not using Railway's PostgreSQL plugin, set these variables:
 - `DB_USER` - Database user
 - `DB_PASSWORD` - Database password
 
+## Vercel Deployment (Frontend)
+
+> Vercel cannot run C++ Drogon servers. Only Node/Python/Go serverless + static.
+> Pattern used here: UI on Vercel, C++ API stays on Railway, `/api/*` proxied.
+
+Architecture:
+```text
+Browser -> https://your-app.vercel.app/ (static login.html)
+        -> https://your-app.vercel.app/api/v1/... (rewrite proxy)
+        -> https://YOUR-RAILWAY-URL.up.railway.app/api/v1/... (C++ Drogon)
+```
+
+### Steps
+
+1. **Deploy backend to Railway first** (see above), copy your Railway URL:
+   `https://xxxx.up.railway.app` — test `https://xxxx.up.railway.app/api/v1/health` returns `{"status":"UP"}`
+
+2. **Update `vercel.json`** — replace `REPLACE-WITH-RAILWAY-URL` with your Railway URL:
+   ```json
+   {
+     "source": "/api/:path*",
+     "destination": "https://xxxx.up.railway.app/api/:path*"
+   }
+   ```
+   Commit + push.
+
+3. **Import to Vercel**:
+   - vercel.com → Add New → Project → Import `sanghavineha15-bit/Sanghavi_Mart`
+   - Framework Preset: `Other`, Root Directory: `./`, no build command needed
+   - Deploy — Vercel serves `config/login.html` at `/`
+
+4. **Test**:
+   - `https://your-app.vercel.app/` → login UI
+   - `https://your-app.vercel.app/api/v1/health` → `{"status":"UP"}` (proxied to Railway)
+
+Frontend uses relative `API_BASE = ''` (`config/login.html:77`), so same code works locally (Drogon serves `/`) and on Vercel (rewrite proxy). No CORS needed.
+
 ## Notes
 
 - Products are persisted in PostgreSQL `products` table (auto-created on startup).
